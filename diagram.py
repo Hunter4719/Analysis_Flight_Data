@@ -120,12 +120,24 @@ for ax, month, caa_file, iata_file in zip(axes, month_names, FILE_NavPass, FILE_
     only_iata_count = (merged_df["_merge"] == "right_only").sum()
     common_count = (merged_df["_merge"] == "both").sum()
 
+    # Calculate total for percentages
+    total_count = only_caa_count + only_iata_count + common_count
+
+    # Calculate percentages
+    only_caa_percentage = (only_caa_count / total_count) * 100
+    only_iata_percentage = (only_iata_count / total_count) * 100
+    common_percentage = (common_count / total_count) * 100
+    
     # Plot the Venn diagram for the current month
     venn = venn2(
         subsets=(only_caa_count, only_iata_count, common_count),
         set_labels=("NavPass", "CAA"),
         ax=ax
     )
+    venn.get_label_by_id('10').set_text(f"{only_caa_count}\n({only_caa_percentage:.1f}%)")
+    venn.get_label_by_id('01').set_text(f"{only_iata_count}\n({only_iata_percentage:.1f}%)")
+    venn.get_label_by_id('11').set_text(f"{common_count}\n({common_percentage:.1f}%)")
+
     ax.set_title(f"Venn Diagram - {month}")
 
 # Adjust layout and show the figure

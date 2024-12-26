@@ -48,7 +48,6 @@ def standardize_time(caa_time, iata_time):
     return caa_dt, iata_dt
 
 # Function to check if the time difference is within 1 hour
-# Function to check if the time difference is within 1 hour
 def is_within_one_hour(caa_time, iata_time):
     valid_mask = caa_time.notna() & iata_time.notna()
     time_diff = (caa_time[valid_mask] - iata_time[valid_mask]).abs()
@@ -66,7 +65,7 @@ for ax, month, caa_file, iata_file in zip(axes, month_names, FILE_NavPass, FILE_
     # Standardize datetime formats for time comparison
     DATA_NavPass['Fir Started'], DATA_CAA['Entry Time'] = standardize_time(DATA_NavPass['Fir Started'], DATA_CAA['Entry Time'])
     DATA_NavPass['Fir Ended'], DATA_CAA['Exit Time'] = standardize_time(DATA_NavPass['Fir Ended'], DATA_CAA['Exit Time'])
-    DATA_NavPass.to_excel('updated.xlsx', index=False)
+    # DATA_NavPass.to_excel('updated.xlsx', index=False)
 
     # Perform the merge
     merged_df = pd.merge(
@@ -82,20 +81,6 @@ for ax, month, caa_file, iata_file in zip(axes, month_names, FILE_NavPass, FILE_
             # "Aircraft Model ICAO Code"
         ],
     )
-
-    # # Filter for time differences within 1 hour
-    # time_filter = (
-    #     is_within_one_hour(merged_df['Fir Started'], merged_df['Entry Time']) |
-    #     is_within_one_hour(merged_df['Fir Ended'], merged_df['Exit Time'])
-    # )
-    # merged_df = merged_df[time_filter]
-
-    # merged_df = merged_df[
-    # (merged_df["_merge"] == "both") & (
-    #     is_within_one_hour(merged_df['Fir Started'], merged_df['Entry Time']) |
-    #     is_within_one_hour(merged_df['Fir Ended'], merged_df['Exit Time'])
-    # )
-    # ]
 
     # Apply the filter only for "_merge == 'both'"
     merged_df.loc[merged_df["_merge"] == "both", "time_match"] = (
@@ -114,7 +99,6 @@ for ax, month, caa_file, iata_file in zip(axes, month_names, FILE_NavPass, FILE_
 
     # print(merged_df)
 
-    # merged_df.to_excel("merged.xlsx", index=False)
     # Calculate counts for the Venn diagram
     only_caa_count = (merged_df["_merge"] == "left_only").sum()
     only_iata_count = (merged_df["_merge"] == "right_only").sum()
